@@ -1,7 +1,13 @@
+DROP DATABASE IF EXISTS vinicola;
+CREATE DATABASE vinicola;
+DROP USER IF EXISTS 'Somellier'@'localhost';
+
+-- Criações ----------------------------------------------------------------------
+
 CREATE TABLE vinicola.Regiao(
-codRegiao VARCHAR(100) AUTO_INCREMENT PRIMARY KEY,
-nomeRegiao VARCHAR(100) NOT NULL,
-descricaoRegiao TEXT
+	codRegiao BIGINT AUTO_INCREMENT PRIMARY KEY,
+	nomeRegiao VARCHAR(100) NOT NULL,
+	descricaoRegiao TEXT
 );
 
 CREATE TABLE vinicola.Vinicola(
@@ -24,6 +30,10 @@ CREATE TABLE vinicola.Vinho(
     FOREIGN KEY (codVinicola) REFERENCES vinicola.Vinicola(codVinicola)
 );
 
+
+-- Inserções ----------------------------------------------------------------------
+
+
 INSERT INTO vinicola.Regiao(nomeRegiao, descricaoRegiao) VALUES
 	('Vale das Pedras', 'Uma região de colinas suaves'),
 	('Encosta dos Ventos', 'Marcada pela constante influência dos ventos marítimos'),
@@ -32,11 +42,11 @@ INSERT INTO vinicola.Regiao(nomeRegiao, descricaoRegiao) VALUES
 	('Vale dos Espelhos', 'O Vale dos Espelhos é uma região de clima equilibrado e forte');
     
 INSERT INTO vinicola.Vinicola(nomeVinicola, descriçãoVinicola, foneVinicola, emailVinicola, codRegiao) VALUES
-	('Pedra Roxa', 'Produz vinhos frescos e elegantes', '4939821123', 'pedraroxa@gmail.com', '1'),
-	('Encantos da Vida', 'Conhecida por seus vinhos aromáticos', '743215-4478', 'encantosdavida@gmail.com', '2'),
-    ('Sol de Ventos', 'Produz vinhos tintos intensos e vinhos brancos delicados', '4837642201', 'soldeventos@gmail.com', '3'),
-    ('Vinhos Finos', 'Cultiva uvas em solos argilosos', '5439017654', 'vinhosfinos@gmail.com', '4'),
-    ('Vinhos das Estrelas', 'Elabora vinhos com equilíbrio dos sabores', '5138479952', 'vinhosdasestrelas@gmail.com', '5');
+	('Pedra Roxa', 'Produz vinhos frescos e elegantes', '4939821123', 'pr@gmail.com', '1'),
+	('Encantos da Vida', 'Conhecida por seus vinhos aromáticos', '7432154478', 'ev@gmail.com', '2'),
+    ('Sol de Ventos', 'Produz vinhos tintos intensos e vinhos brancos delicados', '4837642201', 'sv@gmail.com', '3'),
+    ('Vinhos Finos', 'Cultiva uvas em solos argilosos', '5439017654', 'vf@gmail.com', '4'),
+    ('Vinhos das Estrelas', 'Elabora vinhos com equilíbrio dos sabores', '5138479952', 've@gmail.com', '5');
     
 INSERT INTO vinicola.Vinho(nomeVinho, tipoVinho, anoVinho, descriçãoVinho, codVinicola) VALUES
 	('Aurora', 'Branco Seco', '2020', 'Um vinho branco jovem e fresco', '1'),
@@ -44,4 +54,21 @@ INSERT INTO vinicola.Vinho(nomeVinho, tipoVinho, anoVinho, descriçãoVinho, cod
 	('Encanto', 'Rose', '2022', 'Equilibrado e delicado', '3'),
     ('Brasa', 'Tinto', '1990', 'Ideal para brindar ocasiões especiais', '4'),
     ('Alvorecer', 'Suave', '2011', 'Intenso e complexo', '5');
-    
+
+
+-- Consultas ------------------------------------------------------------------
+
+
+SELECT VNHO.nomeVinho, VNHO.anoVinho, VINI.nomeVinicola, R.nomeRegiao
+FROM vinicola.Regiao AS R
+JOIN vinicola.Vinicola as VINI ON R.codRegiao = VINI.codRegiao
+JOIN vinicola.Vinho as VNHO ON VINI.codVinicola = VNHO.codVinicola;
+
+-- Permissões ----------------------------------------------------------------------
+
+CREATE USER 'Somellier'@'localhost' IDENTIFIED BY '123'
+	WITH MAX_QUERIES_PER_HOUR 40;
+
+GRANT SELECT ON vinicola.Vinho TO 'Somellier'@'localhost';
+   
+GRANT SELECT (codVinicola, nomeVinicola) ON vinicola.Vinicola TO 'Somellier'@'localhost';
